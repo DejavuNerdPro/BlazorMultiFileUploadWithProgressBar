@@ -6,6 +6,9 @@ namespace BlazorSV.Data
 {
 	public class WeatherForecastService
 	{
+
+		private static readonly Random SharedRandom = new Random();
+
 		private static readonly string[] Summaries = new[]
 		{
 		"Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -16,8 +19,8 @@ namespace BlazorSV.Data
 			return Task.FromResult(Enumerable.Range(1, 5).Select(index => new WeatherForecast
 			{
 				Date = startDate.AddDays(index),
-				TemperatureC = Random.Shared.Next(-20, 55),
-				Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+				TemperatureC = SharedRandom.Next(-20, 55),
+				Summary = Summaries[SharedRandom.Next(Summaries.Length)]
 			}).ToArray());
 		}
 	}
