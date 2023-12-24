@@ -1,0 +1,39 @@
+﻿@typeparam T
+@inherits InputBase<T>
+
+<InputSelect class="form-control" @bind-Value="HandleChange">
+    @ChildContent
+    @foreach (T c in Data)
+    {
+        <option value="@c">@c</option>
+    }
+</InputSelect>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public List<T> Data { get; set; }
+
+    [Parameter]
+    public Func<string, T> Parser { get; set; }
+
+    public string HandleChange
+    {
+        get { return CurrentValueAsString; }
+        set { CurrentValueAsString = value; }
+    }
+
+    protected override bool TryParseValueFromString(string value, out T result, out string validationErrorMessage)
+    {
+        result = Parser(value);
+        /*if (value == "Los Angeles" || value == "30")
+        {
+            validationErrorMessage = "Data unaccepted";
+            return false;
+        }*/
+        validationErrorMessage = null;
+        return true;
+    }
+}

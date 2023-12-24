@@ -1,0 +1,56 @@
+﻿@page "/ReusableSelect"
+
+@using BlazorSV.Models;
+<link href="validation.css" rel="stylesheet" />
+
+<h1 class="bg-info text-white">Job Application Form</h1>
+<h2 class="bg-secondary text-white">@FormSubmitMessage</h2>
+
+<EditForm Model="EmployeeData" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <CityAgeValidator Age="30" City="Boston" />
+
+    <div class="form-group">
+        <label>Name</label>
+        <ValidationMessage For="@(() => EmployeeData.Name)" />
+        <InputText class="form-control" @bind-Value="EmployeeData.Name" />
+    </div>
+
+    <div class="form-group">
+        <label>Your City</label>
+        <ValidationMessage For="@(() => EmployeeData.City)" />
+        <SelectCommon T="string" Parser="@(s => Convert.ToString(s))" @bind-Value="EmployeeData.City" Data="Cities">
+            <option selected value="">Select</option>
+        </SelectCommon>
+    </div>
+
+    <div class="form-group">
+        <label>Your Age</label>
+        <ValidationMessage For="@(() => EmployeeData.Age)" />
+        <SelectCommon T="int" Parser="@(s => int.Parse(s))" @bind-Value="EmployeeData.Age" Data="Ages">
+            <option selected value="0">Select</option>
+        </SelectCommon>
+    </div>
+
+    <div class="form-group">
+        <button class="btn btn-primary">Submit</button>
+    </div>
+</EditForm>
+
+@code {
+    public Employee EmployeeData = new Employee();
+
+    public string FormSubmitMessage { get; set; } = "Job Application Not Submitted";
+
+    List<string> Cities = new List<string> { "New York", "Los Angeles", "Boston" };
+    List<int> Ages = new List<int> { 30, 31, 32, 33, 34, 35 };
+
+    public void HandleValidSubmit()
+    {
+        // insert it to the database
+        FormSubmitMessage = "Job Application Submitted";
+    }
+
+    public void HandleInvalidSubmit() => FormSubmitMessage = "Invalid Data Submitted";
+}
