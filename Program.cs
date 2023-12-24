@@ -1,7 +1,6 @@
-using BlazorSV.Data;
-using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 class Program
 {
@@ -10,26 +9,26 @@ class Program
         CreateHostBuilder().Build().Run();
     }
 
-    public static IWebHostBuilder CreateHostBuilder() =>
-        new WebHostBuilder()
-            .ConfigureServices((context, services) =>
+    public static IHostBuilder CreateHostBuilder() =>
+        Host.CreateDefaultBuilder()
+            .ConfigureWebHostDefaults(webBuilder =>
             {
-                services.AddRazorPages();
-                services.AddServerSideBlazor();
-                services.AddSingleton<WeatherForecastService>();
-            })
-            .Configure(app =>
-            {
-                if (!app.HostingEnvironment.IsDevelopment())
-                {
-                    app.UseExceptionHandler("/Error");
-                    app.UseHsts();
-                }
-
-                app.UseHttpsRedirection();
-                app.UseStaticFiles();
-                app.UseRouting();
-                app.MapBlazorHub();
-                app.MapFallbackToPage("/_Host");
+                webBuilder.UseStartup<Startup>();
             });
+}
+
+public class Startup
+{
+    public void Configure(IApplicationBuilder app)
+    {
+        app.UseStaticFiles();
+
+        app.UseRouting();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapBlazorHub();
+            endpoints.MapFallbackToPage("/_Host");
+        });
+    }
 }
